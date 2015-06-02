@@ -1,0 +1,3 @@
+PyYAML==3.11
+requests==2.7.0
+-e git+git@github.com:shortdudey123/python_scout_api.git@3f493302436cc1a77a63afd0c98b4ad0d10da657#egg=scout_api-master

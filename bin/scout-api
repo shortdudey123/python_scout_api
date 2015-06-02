@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+import scout_api
+import argparse
+
+
+def main():
+    # Setup CLI args
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-k', '--key', help='ScoutApp API key')
+    parser.add_argument('-H', '--hostname', help='Hostname for notification change')
+    parser.add_argument('-v', '--version', action='version', version='scout_api {0}'.format(scout_api.__version__))
+    args = parser.parse_args()
+
+if __name__ == "__main__":
+    main()
