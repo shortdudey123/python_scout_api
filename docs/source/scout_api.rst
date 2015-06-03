@@ -4,14 +4,6 @@ scout_api package
 Submodules
 ----------
 
-scout_api.scout_api module
---------------------------
-
-.. automodule:: scout_api.scout_api
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 scout_api.version module
 ------------------------
 
