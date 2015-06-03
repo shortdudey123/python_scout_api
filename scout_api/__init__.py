@@ -3,7 +3,6 @@ import requests
 import logging
 import json
 import sys
-import yaml
 
 __version__ = version.__version__
 
