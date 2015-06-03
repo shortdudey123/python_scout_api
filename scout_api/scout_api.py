@@ -172,6 +172,19 @@ class ScoutAPI(object):
         return self.get_role()['result'].keys()
 
     def get_role_server_list(self, role):
+        """
+        Get the list of servers in a given role
+
+        Args:
+            role (str): role to lookup server list of
+
+        Returns:
+            array: server hostname list
+
+        Raises:
+            ValueError: role does not exist
+
+        """
         self.log.info('Getting server list for the {0} role'.format(role))
         data = self.get_role()['result']
         # TODO: remove
@@ -183,7 +196,7 @@ class ScoutAPI(object):
             return data[role]
         else:
             self.log.debug('Could not find server list for the {0} role'.format(role))
-            return []
+            raise ValueError('{0} is not a valid role'.format(role))
 
     def set_server_notifications(self, hostname, enabled):
         """
