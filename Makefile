@@ -19,6 +19,9 @@ clean:
 	rm -rf $(BUILDDIR)/*
 
 html:
+	cp AUTHORS.rst docs/source
+	cp HISTORY.rst docs/source
+	cp README.rst docs/source
 	sphinx-apidoc -f -o docs/source scout_api
 	sphinx-build -b html -d $(BUILDDIR)/doctrees docs/source $(BUILDDIR)/html
 	@echo
