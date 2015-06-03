@@ -9,9 +9,6 @@ __version__ = version.__version__
 
 SCOUT_API_BASE = 'https://scoutapp.com/api/v2'
 
-# TODO: remove
-DATA_DUMP = False
-
 
 class ScoutAPI(object):
     """Create object to interact with the Scout REST API
@@ -152,27 +149,19 @@ class ScoutAPI(object):
         self.log.info('Getting metrics data based on the filter: {0}'.format(kwargs))
         self.log.debug(kwargs)
         data = self.__query_api('metrics.json', None, kwargs)
-
-        # TODO: remove
-        if DATA_DUMP:
-            self.__dump_json_data('get_metrics.json', data.json())
         return data.json()['result']
 
     def get_role(self):
         """
-        Get the list of roles
+        Get the list of roles with their included servers
 
         Returns:
-            array: list of roles
+            dict: list of roles
 
         """
         self.log.info('Getting role data')
         data = self.__query_api('roles.json')
-
-        # TODO: remove
-        if DATA_DUMP:
-            self.__dump_json_data('get_role.json', data.json())
-        return data.json()
+        return data.json()['result']
 
     def get_role_list(self):
         """
@@ -183,9 +172,6 @@ class ScoutAPI(object):
 
         """
         self.log.info('Getting list of roles')
-        # TODO: remove
-        if DATA_DUMP:
-            self.__dump_json_data('get_role_list.json', self.get_role()['result'].keys())
         return self.get_role()['result'].keys()
 
     def get_role_server_list(self, role):
@@ -204,11 +190,7 @@ class ScoutAPI(object):
         """
         self.log.info('Getting server list for the {0} role'.format(role))
         data = self.get_role()['result']
-        # TODO: remove
         if role in data:
-            if DATA_DUMP:
-                self.__dump_json_data('get_role_server_list.json', data[role])
-                self.__dump_yaml_data('get_role_server_list.yaml', data[role])
             self.log.debug('Found server list for the {0} role'.format(role))
             return data[role]
         else:
@@ -240,10 +222,6 @@ class ScoutAPI(object):
         self.log.info('Setting notifications enabled for {0} to {1}'.format(hostname, enabled))
         post_data = 'notifications={0}'.format(str(enabled).lower())
         data = self.__query_api('servers/{0}'.format(hostname), post_data, None)
-
-        # TODO: remove
-        if DATA_DUMP:
-            self.__dump_json_data('get_metrics.json', data.json())
         return data.json()
 
     def __query_api(self, end_point, post_data=None, query_params=None):
@@ -277,7 +255,9 @@ class ScoutAPI(object):
         self.log.debug('__query_api status code: {0}'.format(r.status_code))
         self.log.debug('__query_api x-request-id: {0}'.format(r.headers['x-request-id']))
         self.log.debug('__query_api headers: {0}'.format(r.headers))
-        self.log.debug('__query_api url: {0}'.format(r.url))  # TODO: remove
+
+        # TODO: remove after done with all api endpoints
+        # self.log.debug('__query_api url: {0}'.format(r.url))
 
         # Handle bad status codes
         if r.status_code == 401:
@@ -287,22 +267,3 @@ class ScoutAPI(object):
         elif r.status_code == 422:
             raise ValueError('Scout was unable to process the request due to an issue with the given query parameters')
         return r
-
-    # TODO: remove
-    def __dump_json_data(self, filename, data):
-        with open(filename, 'w') as f:
-            json.dump(data, f)
-
-    # TODO: remove
-    def __dump_yaml_data(self, filename, data):
-        data = [str(x) for x in data]
-
-        with open(filename, 'w') as f:
-            yaml.dump(data, f, default_flow_style=False)
-
-    # TODO: remove
-    def __load_json_data(self, filename):
-        data = {}
-        with open(filename, 'r') as f:
-            data = json.load(f)
-        return data
