@@ -185,22 +185,22 @@ class ScoutAPI(object):
             self.log.debug('Could not find server list for the {0} role'.format(role))
             return []
 
-    """
-    Enable or disable notifications based on server hostname
-
-    Args:
-        hostname (str): server to change notifcations of
-        enabled (bool): notifications enabled if true, disabled if false
-
-    Returns:
-        dict: repsonse data from ScoutApp REST API
-
-    Raises:
-        TypeError: hostname must is a str
-        TypeError: enabled must is a bool
-
-    """
     def set_server_notifications(self, hostname, enabled):
+        """
+        Enable or disable notifications based on server hostname
+
+        Args:
+            hostname (str): server to change notifcations of
+            enabled (bool): notifications enabled if true, disabled if false
+
+        Returns:
+            dict: repsonse data from ScoutApp REST API
+
+        Raises:
+            TypeError: hostname must is a str
+            TypeError: enabled must is a bool
+
+        """
         # Verify input types
         if not isinstance(hostname, str):
             raise TypeError('hostname parameter must be of type str')
