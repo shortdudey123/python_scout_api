@@ -25,6 +25,51 @@ class ScoutAPI(object):
         self.api_key = api_key
         self.log = logging.getLogger(__name__)
 
+    def get_alerts(self, lifecycle='all'):
+        """
+        Get the metric data based on the given filters.
+        More info about the metrics API endpoint can be found here:
+        http://help.scoutapp.com/v1.2/docs/api#fetching-metrics
+
+        lifecycle options
+            - start: returns only open alerts
+            - end: returns only closed alerts
+            - oneoff: returns only alerts that are simple messages, without an open/closed state. Alerts generated internally by plugins are one-offs
+            - all: returns all alerts
+
+        Args:
+            lifecycle (str, optional): one of the following: start, end, oneoff, all (default all)
+
+        Returns:
+            array: list of dicts containing alert data
+
+            [{u'body': None,
+              u'id': 123456789,
+              u'lifecycle': u'end',
+              u'metric_name': u'% Memory Used',
+              u'metric_value': 81.0,
+              u'plugin_name': u'Memory Profiler',
+              u'server_hostname': u'hostname',
+              u'server_name': u'hostname',
+              u'severity': u'not applicable',
+              u'sparkline_url': u'https://scoutapp.com/account/alerts/123456789/sparkline.png',
+              u'time': u'1970-01-01T00:00:00.000-00:00',
+              u'title': u'% memory used met or exceeded 80%',
+              u'trigger': u'when % memory used meets or exceeds 80% for 60 minutes or more',
+              u'trigger_id': 12345678,
+              u'trigger_template_id': 123456,
+              u'type': u'alert',
+              u'url': u'https://scoutapp.com/a/123456789'}]
+
+        Raises:
+            ValueError: lifecycle not a valid option
+        """
+        self.log.info('Getting alerts for the {0} lifecycle'.format(lifecycle))
+        if lifecycle not in ['start', 'end', 'oneoff', 'all']:
+            raise ValueError('{0} is not a lifecycle option'.format(lifecycle))
+        data = self.__query_api('alerts.json', None, lifecycle)
+        return data.json()['result']
+
     def get_metrics(self, **kwargs):
         """
         Get the metric data based on the given filters.
