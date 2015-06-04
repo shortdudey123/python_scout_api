@@ -24,6 +24,34 @@ class ScoutAPI(object):
         self.api_key = api_key
         self.log = logging.getLogger(__name__)
 
+    def add_roles_to_server(self, hostname, roles):
+        """
+        Add the given list of roles to a server
+
+        Args:
+            hostname (str): server to delete
+            roles (list): list of roles to tadd
+
+        Returns:
+            dict: repsonse data from ScoutApp REST API
+
+        Raises:
+            TypeError: hostname must is a str
+            TypeError: roles must is a list
+
+        """
+        # Verify input types
+        if not isinstance(hostname, str):
+            raise TypeError('hostname parameter must be of type str')
+        if not isinstance(roles, list):
+            raise TypeError('roles parameter must be of type list')
+
+        self.log.info('Adding {0} to {1}'.format(roles, hostname))
+        role_str = 'roles={0}'.format(','.join(roles))
+        try:
+            data = self.__query_api('servers/{0}/roles/add'.format(hostname), 'POST', role_str)
+        return data.json()
+
     def delete_server(self, hostname):
         """
         Delete a server from Scout
@@ -44,7 +72,7 @@ class ScoutAPI(object):
 
         self.log.info('Deleting {0}'.format(hostname))
         try:
-            data = self.__query_api(hostname, 'DELETE')
+            data = self.__query_api('servers/{0}'.format(hostname), 'DELETE')
         except RuntimeError as e:
             if str(e) == 'Endpoint not found':
                 raise RuntimeError('hostname not found')
@@ -334,7 +362,9 @@ class ScoutAPI(object):
         # self.log.debug('__query_api url: {0}'.format(r.url))
 
         # Handle bad status codes
-        if r.status_code == 401:
+        if r.status_code == 400:
+            raise RuntimeError(r.json()['message'])
+        elif r.status_code == 401:
             raise ValueError('Invalid API key')
         elif r.status_code == 404:
             raise RuntimeError('Endpoint not found')
