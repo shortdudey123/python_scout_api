@@ -27,7 +27,7 @@ setup(
     author_email='shortdudey123@gmail.com',
     scripts=['bin/scout-api'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
