@@ -66,7 +66,7 @@ class ScoutAPI(object):
         self.log.info('Getting alerts for the {0} lifecycle'.format(lifecycle))
         if lifecycle not in ['start', 'end', 'oneoff', 'all']:
             raise ValueError('{0} is not a lifecycle option'.format(lifecycle))
-        data = self.__query_api('alerts.json', None, lifecycle)
+        data = self.__query_api('alerts.json', 'GET', lifecycle)
         return data.json()['result']
 
     def get_metrics(self, **kwargs):
@@ -192,7 +192,7 @@ class ScoutAPI(object):
         """
         self.log.info('Getting metrics data based on the filter: {0}'.format(kwargs))
         self.log.debug(kwargs)
-        data = self.__query_api('metrics.json', None, kwargs)
+        data = self.__query_api('metrics.json', 'GET', kwargs)
         return data.json()['result']
 
     def get_role(self):
@@ -216,7 +216,7 @@ class ScoutAPI(object):
 
         """
         self.log.info('Getting list of roles')
-        return self.get_role()['result'].keys()
+        return self.get_role().keys()
 
     def get_role_server_list(self, role):
         """
@@ -233,7 +233,7 @@ class ScoutAPI(object):
 
         """
         self.log.info('Getting server list for the {0} role'.format(role))
-        data = self.get_role()['result']
+        data = self.get_role()
         if role in data:
             self.log.debug('Found server list for the {0} role'.format(role))
             return data[role]
@@ -265,17 +265,17 @@ class ScoutAPI(object):
 
         self.log.info('Setting notifications enabled for {0} to {1}'.format(hostname, enabled))
         post_data = 'notifications={0}'.format(str(enabled).lower())
-        data = self.__query_api('servers/{0}'.format(hostname), post_data, None)
+        data = self.__query_api('servers/{0}'.format(hostname), 'POST', post_data)
         return data.json()
 
-    def __query_api(self, end_point, post_data=None, query_params=None):
+    def __query_api(self, end_point, request_type='GET', query_params=None):
         """
         Query the ScoutApp REST API with the given data
 
         Args:
             end_point (str): api endpoint to query
-            post_data (str, optional): post request with given data if present, get request if absent
-            query_params (dict, optional): url parameters for get requests
+            request_type (str, optional): http request type: GET, POST, or DELETE (default GET)
+            query_params (dict, optional): request parameters
 
         Returns:
             requests.models.Response: request response object
@@ -288,11 +288,13 @@ class ScoutAPI(object):
         """
         # Build the full query URL and call the Scout REST API
         full_url = '{0}/{1}/{2}'.format(SCOUT_API_BASE, self.api_key, end_point)
-        if post_data:
-            r = requests.post(full_url, data=post_data)
-            self.log.debug('__query_api payload: {0}'.format(post_data))
-        else:
+        if request_type == 'POST':
+            r = requests.post(full_url, data=query_params)
+            self.log.debug('__query_api payload: {0}'.format(query_params))
+        elif request_type == 'GET':
             r = requests.get(full_url, params=query_params)
+        elif request_type == 'DELETE':
+            r = requests.delete(full_url, params=query_params)
 
         # Log response info for debugging purposes
         self.log.debug('__query_api url: {0}'.format(r.url.replace(self.api_key, 'XXXXX')))
