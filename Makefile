@@ -30,3 +30,7 @@ html:
 upload:
 	python setup.py sdist upload
 	python setup.py bdist_wheel upload
+	python setup.py upload_sphinx
+
+upload_doc:
+	python setup.py upload_sphinx
