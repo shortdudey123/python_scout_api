@@ -7,9 +7,9 @@ from scout_api import version
 __version__ = version.__version__
 
 
-def read(*paths):
+def read(filename):
     """Build a file path from *paths* and return the contents."""
-    with open(os.path.join(*paths), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), filename), 'r') as f:
         return f.read()
 
 setup(
@@ -43,5 +43,7 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    install_requires=['requests']
+    install_requires=[
+        'requests',
+    ]
 )
