@@ -24,6 +24,28 @@ class ScoutAPI(object):
         self.api_key = api_key
         self.log = logging.getLogger(__name__)
 
+    def add_marker(self, notes):
+        """
+        Add the given list of roles to a server
+
+        Args:
+            notes (str): notes to add with the marker
+
+        Returns:
+            dict: repsonse data from ScoutApp REST API
+
+        Raises:
+            TypeError: notes must is a str
+
+        """
+        # Verify input types
+        if not isinstance(notes, str):
+            raise TypeError('notes parameter must be of type str')
+
+        self.log.info('Adding a marker with nodes: {0}'.format(notes))
+        data = self.__query_api('markers', 'POST', 'notes={0}'.format(notes))
+        return data.json()
+
     def add_roles_to_server(self, hostname, roles):
         """
         Add the given list of roles to a server
@@ -48,8 +70,7 @@ class ScoutAPI(object):
 
         self.log.info('Adding {0} to {1}'.format(roles, hostname))
         role_str = 'roles={0}'.format(','.join(roles))
-        try:
-            data = self.__query_api('servers/{0}/roles/add'.format(hostname), 'POST', role_str)
+        data = self.__query_api('servers/{0}/roles/add'.format(hostname), 'POST', role_str)
         return data.json()
 
     def delete_server(self, hostname):
