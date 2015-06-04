@@ -27,3 +27,6 @@ html:
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
+upload:
+	python setup.py sdist upload
+	python setup.py bdist_wheel upload
