@@ -24,6 +24,34 @@ class ScoutAPI(object):
         self.api_key = api_key
         self.log = logging.getLogger(__name__)
 
+    def delete_server(self, hostname):
+        """
+        Delete a server from Scout
+
+        Args:
+            hostname (str): server to delete
+
+        Returns:
+            dict: repsonse data from ScoutApp REST API
+
+        Raises:
+            TypeError: hostname must is a str
+
+        """
+        # Verify input types
+        if not isinstance(hostname, str):
+            raise TypeError('hostname parameter must be of type str')
+
+        self.log.info('Deleting {0}'.format(hostname))
+        try:
+            data = self.__query_api(hostname, 'DELETE')
+        except RuntimeError as e:
+            if str(e) == 'Endpoint not found':
+                raise RuntimeError('hostname not found')
+            else:
+                raise e
+        return data.json()
+
     def get_alerts(self, lifecycle='all'):
         """
         Get the metric data based on the given filters.
