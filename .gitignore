@@ -55,3 +55,6 @@ docs/build/
 
 # PyBuilder
 target/
+
+# test files
+test.py
