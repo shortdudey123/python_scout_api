@@ -4,7 +4,7 @@ docutils==0.12
 Jinja2==2.11.3
 MarkupSafe==0.23
 pockets==0.2.4
-Pygments==2.7.4
+Pygments==2.15.0
 pytz==2015.4
 requests==2.31.0
 six==1.9.0
